@@ -1,6 +1,6 @@
 openapi: 3.0.4
 
-info: 
+info:
   title: AlgaShop - Ordering
   version: "1.0"
 
@@ -14,7 +14,7 @@ paths:
   /api/v1/customers:
     post:
       description: Register new customer
-      tags: 
+      tags:
         - Customers
       requestBody:
         required: true
@@ -47,6 +47,23 @@ paths:
       description: List customers
       tags:
         - Customers
+      parameters:
+        - schema:
+            type: string
+            example: "12345"
+          in: query
+          name: document
+          required: false
+        - schema:
+            type: string
+            example: "johndoe@email.com"
+          in: query
+          name: email
+          required: false
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/size"
+        - $ref: "#/components/parameters/sort"
+        - $ref: "#/components/parameters/direction"
       responses:
         200:
           description: Ok
@@ -82,7 +99,7 @@ paths:
                 $ref: "#/components/schemas/Customer"
         404:
           $ref: "#/components/responses/NotFound"
-    put: 
+    put:
       parameters:
         - schema:
             type: string
@@ -116,7 +133,7 @@ paths:
           $ref: "#/components/responses/UnprocessableEntity"
         500:
           $ref: "#/components/responses/InternalError"
-    delete: 
+    delete:
       parameters:
         - schema:
             type: string
@@ -134,6 +151,35 @@ paths:
           $ref: "#/components/responses/NotFound"
 
 components:
+  parameters:
+    page:
+      schema:
+        type: integer
+        example: 0
+      name: page
+      in: query
+      required: false
+    size:
+      schema:
+        type: integer
+        example: 5
+      name: size
+      in: query
+      required: false
+    sort:
+      schema:
+        type: string
+        example: "firstName"
+      name: sortByProperty
+      in: query
+      required: false
+    direction:
+      schema:
+        type: string
+        example: "desc"
+      name: sortDirection
+      in: query
+      required: false
   responses:
     NotFound:
       description: Resource not found
@@ -238,24 +284,37 @@ components:
         street:
           type: string
           example: "Bourbon Street"
+          nullable: false
+          x-validation: "notBlank"
         number:
           type: string
           example: "2000"
+          nullable: false
+          x-validation: "notBlank"
         complement:
           type: string
           example: "apt 122"
+          nullable: true
         neighborhood:
           type: string
           example: "North Ville"
+          nullable: false
+          x-validation: "notBlank"
         city:
           type: string
           example: "Yostfort"
+          nullable: false
+          x-validation: "notBlank"
         state:
           type: string
           example: "South Carolina"
+          nullable: false
+          x-validation: "notBlank"
         zipCode:
           type: string
           example: "12321"
+          nullable: false
+          x-validation: "notBlank"
     CustomerInput:
       type: object
       required:
@@ -282,7 +341,7 @@ components:
           type: string
           example: "johndoe@email.com"
           nullable: false
-          x-validation: [ "email", "notBlank" ]
+          x-validation: ["email", "notBlank"]
         document:
           type: string
           example: "12345"
